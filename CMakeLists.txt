@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(cpp_algs)
+project(competitive_cpp)
 
-add_executable(main main.cpp)
-target_compile_features(main PUBLIC cxx_std_17)
-target_compile_definitions(main PUBLIC
+add_executable(${BINARY_NAME} ${MAIN_FILE})
+target_compile_features(${BINARY_NAME} PUBLIC cxx_std_17)
+target_compile_definitions(
+        ${BINARY_NAME} PUBLIC
         $<$<CONFIG:Debug>:LOGGING SYNC_IO>
         $<$<CONFIG:Release>:>
         $<$<CONFIG:RelWithDebInfo>:LOGGING>
         $<$<CONFIG:MinSizeRel>:>
-        )
+)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(main PRIVATE /Zc:preprocessor)
-endif()
+install(
+        TARGETS ${BINARY_NAME}
+        DESTINATION ${BINARY_DIR}
+)

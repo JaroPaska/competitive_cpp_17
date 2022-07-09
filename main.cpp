@@ -1,7 +1,3 @@
-//
-// Created by jaroslavp on 5/13/2022.
-//
-
 #include "base.h"
 
 #define F first
@@ -36,19 +32,93 @@ using min_heap = priority_queue<T, vector<T>, greater<T>>;
 template<class T>
 using max_heap = priority_queue<T>;
 
-constexpr bool endl = false; // used to discourage use of endl
-constexpr char newl = '\n';  // use newl instead
-
 int main() {
-#ifdef SYNC_IO
     ios::sync_with_stdio(0);
     cin.tie(0);
-#endif
-    cout << setprecision(numeric_limits<long double>::max_digits10) << fixed;
-    cout << boolalpha;
 
-    list<int> l(3);
-    cin >> l;
+    int n, m, p;
+    cin >> n >> m >> p;
 
-    LOG(l);
+    vector<int> free_seats(n, m);
+
+    int blocks = sqrt(n);
+    int block_size = (n + blocks - 1) / blocks;
+
+    vector<int> block_minimums(blocks, m);
+    vector<int> lazy_subtract(blocks, 0);
+    while (p--) {
+        LOG(free_seats);
+        LOG(block_minimums);
+        LOG(lazy_subtract);
+        int x, y, z;
+        cin >> x >> y >> z;
+
+        auto is_block_start = [&](int index) {
+            return index % block_size == 0;
+        };
+        auto block_from_index = [&](int index) {
+            return index / block_size;
+        };
+        auto index_from_block = [&](int block) {
+            return block * block_size;
+        };
+        auto propagate = [&](int block) {
+            int block_start = index_from_block(block);
+            int block_end = min(index_from_block(block + 1), n);
+            for (int i = block_start; i < block_end; ++i)
+                free_seats[i] -= lazy_subtract[block];
+            lazy_subtract[block] = 0;
+        };
+
+        int index = y;
+        int minimum = INT_MAX;
+
+        if (index < z && !is_block_start(index))
+            propagate(block_from_index(index));
+        while (index < z && !is_block_start(index)) {
+            minimum = min(minimum, free_seats[index]);
+            ++index;
+        }
+        while (block_from_index(index) < block_from_index(z)) {
+            int block = block_from_index(index);
+            minimum = min(minimum, block_minimums[block]);
+            index += block_size;
+        }
+        if (index < z)
+            propagate(block_from_index(index));
+        while (index < z) {
+            minimum = min(minimum, free_seats[index]);
+            ++index;
+        }
+
+        if (minimum < x) {
+            cout << "odmietnuta\n";
+            continue;
+        }
+
+        cout << "prijata\n";
+        index = y;
+
+        while (index < z && !is_block_start(index)) {
+            int block = block_from_index(index);
+            free_seats[index] -= x;
+            block_minimums[block] = min(block_minimums[block], free_seats[index]);
+            ++index;
+        }
+        while (block_from_index(index) < block_from_index(z)) {
+            int block = block_from_index(index);
+            block_minimums[block] -= x;
+            lazy_subtract[block] += x;
+            index += block_size;
+        }
+        while (index < z) {
+            int block = block_from_index(index);
+            free_seats[index] -= x;
+            block_minimums[block] = min(block_minimums[block], free_seats[index]);
+            ++index;
+        }
+    }
+    LOG(free_seats);
+    LOG(block_minimums);
+    LOG(lazy_subtract);
 }

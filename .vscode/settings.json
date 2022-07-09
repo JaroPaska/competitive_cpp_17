@@ -1,0 +1,9 @@
+{
+    "cmake.configureArgs": [
+        "-DMAIN_FILE=${relativeFile}"
+    ],
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "limits": "cpp"
+    }
+}

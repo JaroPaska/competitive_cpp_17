@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "cd cmake-build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DMAIN_FILE=${relativeFile} -DBINARY_NAME=${fileBasenameNoExtension} -DBINARY_DIR=\"${workspaceFolder}${pathSeparator}cmake-build\" && cmake --build . --config Debug && cmake --install . --config Debug && cd .. && ${config:python.defaultInterpreterPath} gen.py ${relativeFile}",
+            "group": "build"
+        }, {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "cd cmake-build && cmake .. -DCMAKE_BUILD_TYPE=Release -DMAIN_FILE=${relativeFile} -DBINARY_NAME=${fileBasenameNoExtension} -DBINARY_DIR=\"${workspaceFolder}${pathSeparator}cmake-build\" && cmake --build . --config Release && cmake --install . --config Release && cd .. && ${config:python.defaultInterpreterPath} gen.py ${relativeFile}",
+            "group": "build"
+        }, {
+            "label": "Run Debug",
+            "type": "shell",
+            "command": "cmake-build${pathSeparator}${fileBasenameNoExtension} < input.txt > output.txt",
+            "windows": {
+                "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}.exe < input.txt > output.txt"
+            },
+            "group": "build",
+            "dependsOn": "Build Debug"
+        }, {
+            "label": "Run Interactive Debug",
+            "type": "shell",
+            "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}",
+            "windows": {
+                "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}.exe"
+            },
+            "group": "build",
+            "dependsOn": "Build Debug"
+        }, {
+            "label": "Run Release",
+            "type": "shell",
+            "command": "cmake-build${pathSeparator}${fileBasenameNoExtension} < input.txt > output.txt",
+            "windows": {
+                "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}.exe < input.txt > output.txt"
+            },
+            "group": "build",
+            "dependsOn": "Build Release"
+        }, {
+            "label": "Run Interactive Release",
+            "type": "shell",
+            "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}",
+            "windows": {
+                "command": "cmake-build${pathSeparator}${fileBasenameNoExtension}.exe"
+            },
+            "group": "build",
+            "dependsOn": "Build Release"
+        }
+    ]
+}
