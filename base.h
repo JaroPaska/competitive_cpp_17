@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <climits>
 #include <filesystem>
 #include <forward_list>
 #include <iostream>
@@ -27,6 +28,7 @@ using namespace std;
 using namespace chrono;
 using namespace filesystem;
 
+template<class = void>
 ostream& log_prefix(ostream& os, const char* file, int line) {
     return os << "[" << relative(path(file)).string() << ":" << line << "]: ";
 }
@@ -89,7 +91,6 @@ enable_if_t<is_floating_point_v<T>, T> get() {
 } // namespace rng
 
 [[nodiscard]] constexpr unsigned long long splitmix64(unsigned long long x) {
-    // http://xorshift.di.unimi.it/splitmix64.c
     x += 0x9e3779b97f4a7c15;
     x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
     x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
@@ -564,6 +565,12 @@ using impl::DictFmt;
 using impl::Fmt;
 using impl::Printer;
 using impl::operator<<;
+
+template<class T>
+using min_heap = std::priority_queue<T, std::vector<T>, std::greater<T>>;
+
+template<class T>
+using max_heap = std::priority_queue<T>;
 
 template<class T>
 T& min_assign(T& lhs, const T& rhs) {

@@ -1,5 +1,13 @@
-.vs/
-build/
-cmake-build*/
-out/
-input.txt
+# Ignore everything in the same directory as the .gitignore file
+/*
+
+# But not these files...
+!.idea/
+!.vscode/
+!.clang-format
+!.gitignore
+!base.h
+!CMakeLists.txt
+!gen.py
+!polynomial_hash.h
+!README.md
