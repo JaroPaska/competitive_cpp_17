@@ -75,6 +75,5 @@
         "xtr1common": "cpp",
         "xtree": "cpp",
         "xutility": "cpp"
-    },
-    "python.defaultInterpreterPath": "python3"
+    }
 }
