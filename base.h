@@ -10,6 +10,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <random>
 #include <set>
@@ -133,92 +134,70 @@ using hash_map = unordered_map<Key, Mapped, CustomHash<Key>>;
 #endif
 
 template<size_t N>
-struct rank : rank<N - 1> {
-};
+struct rank : rank<N - 1> {};
 
 template<>
-struct rank<0> {
-};
+struct rank<0> {};
 
 template<class T>
-struct is_sequence : false_type {
-};
+struct is_sequence : false_type {};
 
 template<class T, size_t N>
-struct is_sequence<array<T, N>> : true_type {
-};
+struct is_sequence<array<T, N>> : true_type {};
 
 template<class T, class Allocator>
-struct is_sequence<vector<T, Allocator>> : true_type {
-};
+struct is_sequence<vector<T, Allocator>> : true_type {};
 
 template<class T, class Allocator>
-struct is_sequence<deque<T, Allocator>> : true_type {
-};
+struct is_sequence<deque<T, Allocator>> : true_type {};
 
 template<class T, class Allocator>
-struct is_sequence<forward_list<T, Allocator>> : true_type {
-};
+struct is_sequence<forward_list<T, Allocator>> : true_type {};
 
 template<class T, class Allocator>
-struct is_sequence<list<T, Allocator>> : true_type {
-};
+struct is_sequence<list<T, Allocator>> : true_type {};
 
 template<class T>
-struct is_set : false_type {
-};
+struct is_set : false_type {};
 
 template<class Key, class Compare, class Allocator>
-struct is_set<set<Key, Compare, Allocator>> : true_type {
-};
+struct is_set<set<Key, Compare, Allocator>> : true_type {};
 
 template<class Key, class Compare, class Allocator>
-struct is_set<multiset<Key, Compare, Allocator>> : true_type {
-};
+struct is_set<multiset<Key, Compare, Allocator>> : true_type {};
 
 template<class Key, class Hash, class KeyEqual, class Allocator>
-struct is_set<unordered_set<Key, Hash, KeyEqual, Allocator>> : true_type {
-};
+struct is_set<unordered_set<Key, Hash, KeyEqual, Allocator>> : true_type {};
 
 template<class Key, class Hash, class KeyEqual, class Allocator>
-struct is_set<unordered_multiset<Key, Hash, KeyEqual, Allocator>> : true_type {
-};
+struct is_set<unordered_multiset<Key, Hash, KeyEqual, Allocator>> : true_type {};
 
 template<class T>
-struct is_map : false_type {
-};
+struct is_map : false_type {};
 
 template<class Key, class T, class Compare, class Allocator>
-struct is_map<map<Key, T, Compare, Allocator>> : true_type {
-};
+struct is_map<map<Key, T, Compare, Allocator>> : true_type {};
 
 template<class Key, class T, class Compare, class Allocator>
-struct is_map<multimap<Key, T, Compare, Allocator>> : true_type {
-};
+struct is_map<multimap<Key, T, Compare, Allocator>> : true_type {};
 
 template<class Key, class T, class Hash, class KeyEqual, class Allocator>
-struct is_map<unordered_map<Key, T, Hash, KeyEqual, Allocator>> : true_type {
-};
+struct is_map<unordered_map<Key, T, Hash, KeyEqual, Allocator>> : true_type {};
 
 template<class Key, class T, class Hash, class KeyEqual, class Allocator>
-struct is_map<unordered_multimap<Key, T, Hash, KeyEqual, Allocator>> : true_type {
-};
+struct is_map<unordered_multimap<Key, T, Hash, KeyEqual, Allocator>> : true_type {};
 
 template<class T>
-struct is_adaptor : false_type {
-};
+struct is_adaptor : false_type {};
 
 template<class T, class Container>
-struct is_adaptor<stack<T, Container>> : true_type {
-};
+struct is_adaptor<stack<T, Container>> : true_type {};
 
 template<class T, class Container>
-struct is_adaptor<queue<T, Container>> : true_type {
-};
+struct is_adaptor<queue<T, Container>> : true_type {};
 
 template<class T, class Container, class Compare>
-struct is_adaptor<priority_queue<T, Container, Compare>> : true_type {
-};
+struct is_adaptor<priority_queue<T, Container, Compare>> : true_type {};
 
 template<class Adaptor>
 const typename Adaptor::container_type& get_container(const Adaptor& a) {
@@ -243,16 +222,27 @@ struct is_set<
     gp_hash_table<Key, null_type, Hash_Fn, Eq_Fn, Comp_Probe_Fn, Probe_Fn, Resize_Policy, Store_Hash, Allocator>>
     : true_type {};
 
+template<typename Key, typename Cmp_Fn, typename Tag,
+         template<typename Const_Node_Iterator, typename Node_Iterator, typename Cmp_Fn_, typename Allocator_>
+         class Node_Update,
+         typename Allocator>
+struct is_map<tree<Key, null_type, Cmp_Fn, Tag, Node_Update, Allocator>> : false_type {};
+
+template<typename Key, typename Hash_Fn, typename Eq_Fn, typename Comp_Probe_Fn, typename Probe_Fn,
+         typename Resize_Policy, bool Store_Hash, typename Allocator>
+struct is_map<
+    gp_hash_table<Key, null_type, Hash_Fn, Eq_Fn, Comp_Probe_Fn, Probe_Fn, Resize_Policy, Store_Hash, Allocator>>
+    : false_type {};
+
 template<typename Key, typename Mapped, typename Cmp_Fn, typename Tag,
          template<typename Const_Node_Iterator, typename Node_Iterator, typename Cmp_Fn_, typename Allocator_>
          class Node_Update,
          typename Allocator>
 struct is_map<tree<Key, Mapped, Cmp_Fn, Tag, Node_Update, Allocator>> : true_type {};
 
-template<typename Key, typename Hash_Fn, typename Eq_Fn, typename Comp_Probe_Fn, typename Probe_Fn,
+template<typename Key, typename Mapped, typename Hash_Fn, typename Eq_Fn, typename Comp_Probe_Fn, typename Probe_Fn,
          typename Resize_Policy, bool Store_Hash, typename Allocator>
-struct is_map<
-    gp_hash_table<Key, null_type, Hash_Fn, Eq_Fn, Comp_Probe_Fn, Probe_Fn, Resize_Policy, Store_Hash, Allocator>>
+struct is_map<gp_hash_table<Key, Mapped, Hash_Fn, Eq_Fn, Comp_Probe_Fn, Probe_Fn, Resize_Policy, Store_Hash, Allocator>>
     : true_type {};
 
 #endif
@@ -312,8 +302,7 @@ struct Printer {
     ostream& print(ostream& os, const T& x) {
         return print(os, x, rank<1>());
     }
-
-private:
+  private:
     template<class T>
     ostream& print(ostream& os, const T& x, rank<0>) {
         return os << x;
@@ -532,10 +521,10 @@ ostream& log(ostream& os, const char* file, int line, const array<string_view, N
         return x;                                                                                                      \
     }()
 #define LOG(...)                                                                                                       \
-    ::impl::log(cout, __FILE__, __LINE__,                                                                              \
+    ::impl::log(::std::cout, __FILE__, __LINE__,                                                                              \
                 FORCE_CONSTEXPR(::impl::split_args<::impl::count_args(#__VA_ARGS__)>(#__VA_ARGS__)), __VA_ARGS__)      \
         << '\n'                                                                                                        \
-        << flush
+        << ::std::flush
 #else
 #define LOG(...)
 #endif
