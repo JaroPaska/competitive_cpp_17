@@ -9,5 +9,6 @@
 !base.h
 !CMakeLists.txt
 !gen.py
+!number_theory.h
 !polynomial_hash.h
 !README.md
