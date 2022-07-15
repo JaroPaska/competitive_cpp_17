@@ -144,18 +144,20 @@ bool is_prime(long long n) {
 }
  
 long long pollard_rho(long long n) {
-    for (long long a = 1; a <= n - 1; a++) {
-        auto f = [a, n](long long x) { return mod(mod_mul(x, x, n) + a, n); };
-        long long x = 2, y = 2;
-        do {
-            x = f(x);
-            y = f(f(y));
-            long long p = std::__gcd(llabs(x - y), n);
-            if (p > 1 && p < n)
-                return p;
-        } while (x != y);
-    }
-    return 0;
+    for (long long sum = 3; sum <= n; ++sum)
+        for (long long c = 1; sum - c >= 2; ++c) {
+            auto g = [c, n](long long x) { return mod(mod_mul(x, x, n) + c, n); };
+            long long x = sum - c;
+            long long y = x;
+            do {
+                x = g(x);
+                y = g(g(y));
+                long long p = std::__gcd(llabs(x - y), n);
+                if (p > 1 && p < n)
+                    return p;
+            } while (x != y);
+        }
+    throw std::invalid_argument("no divisor found");
 }
  
 hash_map<long long, long long> factorize(long long n) {
