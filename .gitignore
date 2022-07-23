@@ -3,11 +3,15 @@
 
 # But not these files...
 !.idea/
-!.vscode/
+!.vscode/settings.json
+!.vscode/snippets.code-snippets
+!.vscode/tasks.json
 !.clang-format
 !.gitignore
 !base.h
+!binary_search.h
 !CMakeLists.txt
 !gen.py
+!number_theory.h
 !polynomial_hash.h
 !README.md
