@@ -7,6 +7,7 @@
 !.clang-format
 !.gitignore
 !base.h
+!binary_search.h
 !CMakeLists.txt
 !gen.py
 !number_theory.h

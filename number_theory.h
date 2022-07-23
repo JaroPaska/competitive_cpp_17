@@ -4,20 +4,7 @@
 
 #include "base.h"
 
-const long long MOD = 1e9 + 7;
-
-long long sq(long long x) {
-    return x * x;
-}
-
-template <class T>
-int sgn(T x) {
-    return (x > 0) - (x < 0);
-}
-
-long long gcd(long long a, long long b, long long* x = nullptr, long long* y = nullptr) {
-    a = abs(a);
-    b = abs(b);
+long long extended_euclid(long long a, long long b, long long& x, long long& y) {
     std::pair<long long, long long> s{1, 0};
     std::pair<long long, long long> t{0, 1};
     std::pair<long long, long long> r{a, b};
@@ -27,8 +14,8 @@ long long gcd(long long a, long long b, long long* x = nullptr, long long* y = n
         s = { s.second, s.first - q * s.second };
         t = { t.second, t.first - q * t.second };
     }
-    if (x) *x = s.first;
-    if (y) *y = t.first;
+    x = s.first;
+    y = t.first;
     return r.first;
 }
 
@@ -159,7 +146,7 @@ long long pollard_rho(long long n) {
             }
             hare = f(hare);
             lambda += 1;
-            long long common = gcd(abs(tortoise - hare), n);
+            long long common = std::gcd(abs(tortoise - hare), n);
             if (common > 1 && common < n)
                 return common;
         }

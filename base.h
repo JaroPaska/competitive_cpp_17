@@ -10,6 +10,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <random>
 #include <set>
@@ -100,7 +101,7 @@ enable_if_t<is_floating_point_v<T>, T> get() {
 
 template<class T>
 struct CustomHash {
-    size_t operator()(T x) const {
+    size_t operator()(const T& x) const {
         static const unsigned long long FIXED_RANDOM = modern_clock::now().time_since_epoch().count();
         return static_cast<size_t>(splitmix64(hash<T>()(x) + FIXED_RANDOM));
     }
@@ -586,3 +587,20 @@ T& max_assign(T& lhs, const T& rhs) {
         lhs = rhs;
     return lhs;
 }
+
+long long sq(long long x) {
+    return x * x;
+}
+
+long double sq(long double x) {
+    return x * x;
+}
+
+template <class T>
+int sgn(T x) {
+    return (x > 0) - (x < 0);
+}
+
+const int INF = static_cast<int>(1e9);
+const long long LLINF = static_cast<long long>(1e18);
+const long long MOD = INF + 7;
