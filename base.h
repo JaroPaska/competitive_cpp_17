@@ -577,17 +577,17 @@ T& max_assign(T& lhs, const T& rhs) {
     return lhs;
 }
 
+template <class T>
+int sgn(T x) {
+    return (x > 0) - (x < 0);
+}
+
 long long sq(long long x) {
     return x * x;
 }
 
 long double sq(long double x) {
     return x * x;
-}
-
-template <class T>
-int sgn(T x) {
-    return (x > 0) - (x < 0);
 }
 
 const int INF = static_cast<int>(1e9);
