@@ -4,7 +4,6 @@
 
 #include "base.h"
 
-<<<<<<< HEAD
 long long extended_euclid(long long a, long long b, long long& x, long long& y) {
     std::pair<long long, long long> s{1, 0};
     std::pair<long long, long long> t{0, 1};
@@ -18,32 +17,6 @@ long long extended_euclid(long long a, long long b, long long& x, long long& y) 
     x = s.first;
     y = t.first;
     return r.first;
-=======
-const long long MOD = 1e9 + 7;
-
-long long sq(long long x) {
-    return x * x;
-}
-
-template <class T>
-int sgn(T x) {
-    return (x > 0) - (x < 0);
-}
-
-long long gcd(long long a, long long b, long long* x = nullptr, long long* y = nullptr) {
-    std::array<long long, 2> r = {a, b};
-    std::array<long long, 2> s = {1, 0};
-    std::array<long long, 2> t = {0, 1};    
-    while (r[1]) {
-        long long quotient = r[0] / r[1];
-        r = {r[1], r[0] - quotient * r[1]};
-        s = {s[1], s[0] - quotient * s[1]};
-        t = {t[1], t[0] - quotient * t[1]};
-    }
-    if (x) *x = s[0];
-    if (y) *y = t[0];
-    return r[0];
->>>>>>> d6e4480e53840d81b0305463667c22f889275f8a
 }
 
 long long mod(long long x, long long m = MOD) {
@@ -168,7 +141,7 @@ long long pollard_rho(long long n) {
             do {
                 x = g(x);
                 y = g(g(y));
-                long long p = std::__gcd(llabs(x - y), n);
+                long long p = std::gcd(llabs(x - y), n);
                 if (p > 1 && p < n)
                     return p;
             } while (x != y);
