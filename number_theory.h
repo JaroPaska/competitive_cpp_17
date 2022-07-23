@@ -1,6 +1,4 @@
-#if defined(_MSC_VER)
-#error MSVC not supported
-#endif
+#pragma once
 
 #include "base.h"
 
@@ -8,7 +6,7 @@ long long extended_euclid(long long a, long long b, long long& x, long long& y) 
     std::pair<long long, long long> s{1, 0};
     std::pair<long long, long long> t{0, 1};
     std::pair<long long, long long> r{a, b};
-    while (r.second != 0) {
+    while (r.second) {
         long long q = r.first / r.second;
         r = { r.second, r.first - q * r.second };
         s = { s.second, s.first - q * s.second };
@@ -18,6 +16,8 @@ long long extended_euclid(long long a, long long b, long long& x, long long& y) 
     y = t.first;
     return r.first;
 }
+
+const long long MOD = INF + 7;
 
 long long mod(long long x, long long m = MOD) {
     long long tmp = x % m;
@@ -30,7 +30,7 @@ long long mod_mul(long long a, long long b, long long m = MOD) {
 }
  
 long long mod_exp(long long base, long long exp, long long m = MOD) {
-    if (exp == 0)
+    if (!exp)
         return mod(1, m);
     long long result = mod(1, m);
     base = mod(base, m);
@@ -82,25 +82,23 @@ long long nck(size_t n, size_t k, long long p = MOD) {
     auto& f = it->second;
     while (n >= f.size()) {
         auto x = f.size();
-        while (x % p == 0)
+        while (!(x % p))
             x /= p;
         f.push_back(mod(x * f.back(), p));
     }
     return mod_div(f[n], mod(f[k] * f[n - k], p), p);
 }
 
-std::vector<int> spf, pr;
-void linear_sieve(int n) {
-    pr.clear();
-    spf.assign(n + 1, 0);
-    spf[0] = spf[1] = -1;
+std::vector<int> gpf;
+void sieve(int n) {
+    gpf.assign(n + 1, 0);
+    gpf[0] = gpf[1] = -1;
     for (int i = 2; i <= n; i++) {
-        if (spf[i] == 0) {
-            spf[i] = i;
-            pr.push_back(i);
-        }
-        for (int j = 0; j < (int)pr.size() && pr[j] <= spf[i] && i * pr[j] <= n; j++)
-            spf[i * pr[j]] = pr[j];
+        if (gpf[i])
+            continue;
+        gpf[i] = i;
+        for (int j = 2 * i; j <= n; j += i)
+            gpf[j] = i;
     }
 }
 
@@ -117,8 +115,8 @@ bool miller_test(long long n, long long d, long long r, long long a) {
 }
 
 bool is_prime(long long n) {
-    if (n < (int)spf.size())
-        return spf[n] == n;
+    if (n < gpf.size())
+        return gpf[n] == n;
     if (n < 2)
         return false;
     if (n < 4)
@@ -126,7 +124,7 @@ bool is_prime(long long n) {
     long long r = __builtin_ctzll(n - 1);
     long long d = (n - 1) >> r;
     static std::vector<long long> BASES{ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37 }; 
-    for (int i = 0; i < (int)BASES.size() && BASES[i] <= n - 2; i++)
+    for (int i = 0; i < BASES.size() && BASES[i] <= n - 2; i++)
         if (!miller_test(n, d, r, BASES[i]))
             return false;
     return true;
@@ -150,11 +148,11 @@ long long pollard_rho(long long n) {
 }
  
 hash_map<long long, long long> factorize(long long n) {
-    if (n < (int)spf.size()) {
+    if (n < gpf.size()) {
         hash_map<long long, long long> m;
         while (n > 1) {
-            m[spf[n]]++;
-            n /= spf[n];
+            m[gpf[n]]++;
+            n /= gpf[n];
         }
         return m;
     }
@@ -173,7 +171,7 @@ hash_map<long long, long long> factorize(long long n) {
         }
     }
     hash_map<long long, long long> m;
-    for (const auto& x : factors)
-        ++m[x];
+    for (const auto& factor : factors)
+        ++m[factor];
     return m;
 }

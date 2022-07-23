@@ -592,4 +592,3 @@ int sgn(T x) {
 
 const int INF = static_cast<int>(1e9);
 const long long LLINF = static_cast<long long>(1e18);
-const long long MOD = INF + 7;

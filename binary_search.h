@@ -1,4 +1,4 @@
-#include "base.h"
+#pragma once
 
 template<class Fn, class T>
 T binary_search(Fn is_left, T left, T right, T epsilon = 1) {
