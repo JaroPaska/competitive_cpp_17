@@ -3,7 +3,9 @@
 
 # But not these files...
 !.idea/
-!.vscode/
+!.vscode/settings.json
+!.vscode/snippets.code-snippets
+!.vscode/tasks.json
 !.clang-format
 !.gitignore
 !base.h
