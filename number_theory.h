@@ -4,6 +4,7 @@
 
 #include "base.h"
 
+<<<<<<< HEAD
 long long extended_euclid(long long a, long long b, long long& x, long long& y) {
     std::pair<long long, long long> s{1, 0};
     std::pair<long long, long long> t{0, 1};
@@ -17,6 +18,32 @@ long long extended_euclid(long long a, long long b, long long& x, long long& y) 
     x = s.first;
     y = t.first;
     return r.first;
+=======
+const long long MOD = 1e9 + 7;
+
+long long sq(long long x) {
+    return x * x;
+}
+
+template <class T>
+int sgn(T x) {
+    return (x > 0) - (x < 0);
+}
+
+long long gcd(long long a, long long b, long long* x = nullptr, long long* y = nullptr) {
+    std::array<long long, 2> r = {a, b};
+    std::array<long long, 2> s = {1, 0};
+    std::array<long long, 2> t = {0, 1};    
+    while (r[1]) {
+        long long quotient = r[0] / r[1];
+        r = {r[1], r[0] - quotient * r[1]};
+        s = {s[1], s[0] - quotient * s[1]};
+        t = {t[1], t[0] - quotient * t[1]};
+    }
+    if (x) *x = s[0];
+    if (y) *y = t[0];
+    return r[0];
+>>>>>>> d6e4480e53840d81b0305463667c22f889275f8a
 }
 
 long long mod(long long x, long long m = MOD) {
@@ -25,7 +52,7 @@ long long mod(long long x, long long m = MOD) {
 }
 
 long long mod_mul(long long a, long long b, long long m = MOD) {
-    long long x = (long long)(a * (__int128)(b) % m);
+    long long x = a * static_cast<__int128>(b) % m;
     return x >= 0 ? x : x + m;
 }
  
@@ -123,7 +150,7 @@ bool is_prime(long long n) {
         return false;
     if (n < 4)
         return true;
-    long long r = __builtin_ctz(n - 1);
+    long long r = __builtin_ctzll(n - 1);
     long long d = (n - 1) >> r;
     static std::vector<long long> BASES{ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37 }; 
     for (int i = 0; i < (int)BASES.size() && BASES[i] <= n - 2; i++)
@@ -133,25 +160,20 @@ bool is_prime(long long n) {
 }
  
 long long pollard_rho(long long n) {
-    for (long long a = 1; a <= n - 1; a++) {
-        auto f = [a, n](long long x) { return mod(mod_mul(x, x, n) + a, n); };
-        long long lambda = 1;
-        long long power = 1;
-        long long tortoise = 2, hare = f(tortoise);
-        while (tortoise != hare) {
-            if (lambda == power) {
-                tortoise = hare;
-                power *= 2;
-                lambda = 0;
-            }
-            hare = f(hare);
-            lambda += 1;
-            long long common = std::gcd(abs(tortoise - hare), n);
-            if (common > 1 && common < n)
-                return common;
+    for (long long sum = 3; sum <= n; ++sum)
+        for (long long c = 1; sum - c >= 2; ++c) {
+            auto g = [c, n](long long x) { return mod(mod_mul(x, x, n) + c, n); };
+            long long x = sum - c;
+            long long y = x;
+            do {
+                x = g(x);
+                y = g(g(y));
+                long long p = std::__gcd(llabs(x - y), n);
+                if (p > 1 && p < n)
+                    return p;
+            } while (x != y);
         }
-    }
-    return 0;
+    throw std::invalid_argument("no divisor found");
 }
  
 hash_map<long long, long long> factorize(long long n) {
@@ -163,7 +185,7 @@ hash_map<long long, long long> factorize(long long n) {
         }
         return m;
     }
-    int twos = __builtin_ctz(n);
+    int twos = __builtin_ctzll(n);
     std::vector<long long> factors(twos, 2), st{n >> twos};
     while (!st.empty() && st.back() > 1) {
         long long x = st.back();
@@ -178,7 +200,7 @@ hash_map<long long, long long> factorize(long long n) {
         }
     }
     hash_map<long long, long long> m;
-    for (size_t i = 0; i < factors.size(); i++)
-        m[factors[i]]++;
+    for (const auto& x : factors)
+        ++m[x];
     return m;
 }
