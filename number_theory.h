@@ -2,12 +2,13 @@
 
 #include "base.h"
 
-long long extended_euclid(long long a, long long b, long long& x, long long& y) {
-    std::pair<long long, long long> s{1, 0};
-    std::pair<long long, long long> t{0, 1};
-    std::pair<long long, long long> r{a, b};
+template<class T>
+T extended_euclid(T a, T b, T& x, T& y) {
+    std::pair<T, T> s{1, 0};
+    std::pair<T, T> t{0, 1};
+    std::pair<T, T> r{a, b};
     while (r.second) {
-        long long q = r.first / r.second;
+        T q = r.first / r.second;
         r = { r.second, r.first - q * r.second };
         s = { s.second, s.first - q * s.second };
         t = { t.second, t.first - q * t.second };
@@ -17,7 +18,7 @@ long long extended_euclid(long long a, long long b, long long& x, long long& y) 
     return r.first;
 }
 
-const long long MOD = INF + 7;
+constexpr long long MOD = INF + 7;
 
 long long mod(long long x, long long m = MOD) {
     long long tmp = x % m;
@@ -25,8 +26,21 @@ long long mod(long long x, long long m = MOD) {
 }
 
 long long mod_mul(long long a, long long b, long long m = MOD) {
+#ifdef __SIZEOF_INT128__
     long long x = a * static_cast<__int128>(b) % m;
     return x >= 0 ? x : x + m;
+#else
+    a = mod(a, m);
+    b = mod(b, m);
+    ll result = 0;
+    while (b > 0) {
+        if (b & 1)
+            result = mod(result + a, m);
+        b = b >> 1;
+        a = mod(a * 2, m);
+    }
+    return result;
+#endif
 }
  
 long long mod_exp(long long base, long long exp, long long m = MOD) {
