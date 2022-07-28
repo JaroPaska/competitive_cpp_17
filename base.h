@@ -31,9 +31,69 @@ using namespace std;
 using namespace chrono;
 using namespace filesystem;
 
-template<class = void>
+#ifdef __SIZEOF_INT128__
+
+istream& operator>>(istream& is, __int128& x) {
+    string s;
+    is >> s;
+    x = 0;
+    bool neg = false;
+    size_t i = 0;
+    if (s[i] == '-') {
+        neg = true;
+        i++;
+    }
+    if (s[i] == '+')
+        i++;
+    for (; i < s.size(); i++) {
+        if (!isdigit(s[i]))
+            throw runtime_error(string("Non-numeric character: ") + s[i]);
+        x *= 10;
+        x += s[i] - '0';
+    }
+    if (neg)
+        x *= -1;
+    return is;
+}
+
+ostream& operator<<(ostream& os, __int128 x) {
+    if (x < 0) {
+        os << "-";
+        x *= -1;
+    }
+    string s;
+    do {
+        s.push_back('0' + x % 10);
+        x /= 10;
+    } while (x > 0);
+    for (auto it = s.crbegin(); it != s.crend(); it++)
+        os << *it;
+    return os;
+}
+
+#endif
+
+#ifdef _GLIBCXX_USE_FLOAT128
+
+istream& operator>>(istream& is, __float128& x) {
+    long double d;
+    is >> d;
+    x = d;
+    return is;
+}
+
+ostream& operator<<(ostream& os, __float128 x) {
+    return os << (long double)x;
+}
+
+#endif
+
 ostream& log_prefix(ostream& os, const char* file, int line) {
+#ifdef LOGGING
     return os << "[" << relative(path(file)).string() << ":" << line << "]: ";
+#else
+    return os;
+#endif
 }
 
 using modern_clock = high_resolution_clock;
@@ -564,31 +624,45 @@ template<class T>
 using max_heap = std::priority_queue<T>;
 
 template<class T>
-T& min_assign(T& lhs, const T& rhs) {
+constexpr T& min_assign(T& lhs, const T& rhs) {
     if (lhs > rhs)
         lhs = rhs;
     return lhs;
 }
 
 template<class T>
-T& max_assign(T& lhs, const T& rhs) {
+constexpr T& max_assign(T& lhs, const T& rhs) {
     if (lhs < rhs)
         lhs = rhs;
     return lhs;
 }
 
 template <class T>
-int sgn(T x) {
+constexpr int sgn(T x) {
     return (x > 0) - (x < 0);
 }
 
-long long sq(long long x) {
+template<class T>
+constexpr T floor_div(T a, T b) {
+    T d = a / b;
+    T r = a % b;
+    return r ? (d - ((a < 0) ^ (b < 0))) : d;
+}
+
+template<class T>
+constexpr T ceil_div(T a, T b) {
+    T d = a / b;
+    T r = a % b;
+    return r ? (d + ((a > 0) ^ (b < 0))) : d;
+}
+
+constexpr long long sq(long long x) {
     return x * x;
 }
 
-long double sq(long double x) {
+constexpr long double sq(long double x) {
     return x * x;
 }
 
-const int INF = static_cast<int>(1e9);
-const long long LLINF = static_cast<long long>(1e18);
+constexpr int INF = static_cast<int>(1e9);
+constexpr long long LLINF = static_cast<long long>(1e18);
