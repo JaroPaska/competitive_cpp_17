@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <queue>
 #include <random>
 #include <set>
