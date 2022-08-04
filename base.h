@@ -665,5 +665,5 @@ constexpr long double sq(long double x) {
     return x * x;
 }
 
-constexpr int INF = static_cast<int>(1e9);
-constexpr long long LLINF = static_cast<long long>(1e18);
+constexpr int INF = 1e9;
+constexpr long long LLINF = 1e18;
