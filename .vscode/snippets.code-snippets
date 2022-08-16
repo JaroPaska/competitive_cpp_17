@@ -50,7 +50,7 @@
 			"using vvc = vector<vc>;",
 			" ",
 			"int main(int argc, char** argv) {",
-			"#ifdef SYNC_IO",
+			"#ifndef SYNC_IO",
 			"    ios::sync_with_stdio(0);",
 			"    cin.tie(0);",
 			"#endif",

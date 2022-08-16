@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <bitset>
 #include <chrono>
 #include <climits>
 #include <filesystem>
@@ -20,6 +21,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <variant>
 #include <vector>
 
 #if __has_include(<ext/pb_ds/assoc_container.hpp>)
@@ -161,11 +163,23 @@ enable_if_t<is_floating_point_v<T>, T> get() {
     return x ^ (x >> 31);
 }
 
-template<class T>
 struct CustomHash {
+    template<class T>
     size_t operator()(const T& x) const {
         static const unsigned long long FIXED_RANDOM = modern_clock::now().time_since_epoch().count();
         return static_cast<size_t>(splitmix64(hash<T>()(x) + FIXED_RANDOM));
+    }
+
+    template<class T>
+    inline void hash_combine(size_t& seed, const T& v) const {
+        seed ^= operator()(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+    }
+
+    template<class T1, class T2>
+    size_t operator()(const pair<T1, T2>& p) const {
+        size_t seed = operator()(p.first);
+        hash_combine(seed, p.second);
+        return seed;
     }
 };
 
@@ -180,18 +194,18 @@ template<typename Key, typename Mapped, typename Cmp_Fn = less<Key>>
 using tree_map = tree<Key, Mapped, Cmp_Fn, rb_tree_tag, tree_order_statistics_node_update>;
 
 template<typename Key>
-using hash_set = gp_hash_table<Key, null_type, CustomHash<Key>>;
+using hash_set = gp_hash_table<Key, null_type, CustomHash>;
 
 template<typename Key, typename Mapped>
-using hash_map = gp_hash_table<Key, Mapped, CustomHash<Key>>;
+using hash_map = gp_hash_table<Key, Mapped, CustomHash>;
 
 #else
 
 template<typename Key>
-using hash_set = unordered_set<Key, CustomHash<Key>>;
+using hash_set = unordered_set<Key, CustomHash>;
 
 template<typename Key, typename Mapped>
-using hash_map = unordered_map<Key, Mapped, CustomHash<Key>>;
+using hash_map = unordered_map<Key, Mapped, CustomHash>;
 
 #endif
 
