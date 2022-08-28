@@ -26,20 +26,14 @@ long long mod(long long x, long long m = MOD) {
 }
 
 long long mod_mul(long long a, long long b, long long m = MOD) {
-#ifdef __SIZEOF_INT128__
-    long long x = a * static_cast<__int128>(b) % m;
-    return x >= 0 ? x : x + m;
+#ifdef _MSC_VER
+    unsigned long long h, l, r;
+    l = _umul128(llabs(a), llabs(b), &h);
+    _udiv128(h, l, m, &r);
+    return sgn(a) * sgn(b) >= 0 ? r : m - r;
 #else
-    a = mod(a, m);
-    b = mod(b, m);
-    ll result = 0;
-    while (b > 0) {
-        if (b & 1)
-            result = mod(result + a, m);
-        b = b >> 1;
-        a = mod(a * 2, m);
-    }
-    return result;
+    long long r = a * static_cast<__int128>(b) % m;
+    return r >= 0 ? r : r + m;
 #endif
 }
  

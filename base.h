@@ -284,6 +284,15 @@ const typename Adaptor::container_type& get_container(const Adaptor& a) {
     return hack::get(a);
 }
 
+template<class Adaptor>
+typename Adaptor::container_type& get_container(Adaptor& a) {
+    struct hack : Adaptor {
+        static typename Adaptor::container_type& get(Adaptor& a) { return a.*&hack::c; }
+    };
+
+    return hack::get(a);
+}
+
 #ifdef PB_DS_ASSOC_CNTNR_HPP
 
 template<typename Key, typename Cmp_Fn, typename Tag,
