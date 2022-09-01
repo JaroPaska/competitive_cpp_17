@@ -18,7 +18,7 @@ T extended_euclid(T a, T b, T& x, T& y) {
     return r.first;
 }
 
-constexpr long long MOD = INF + 7;
+constexpr long long MOD = 1'000'000'007;
 
 long long mod(long long x, long long m = MOD) {
     long long tmp = x % m;

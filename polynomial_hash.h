@@ -15,7 +15,7 @@ public:
     }
 
     static constexpr long long P = 269;
-    static constexpr long long M = 1e18 + 9;
+    static constexpr long long M = 1'000'000'000'000'000'009;
 
 private:
     static long long power(int exponent) {
