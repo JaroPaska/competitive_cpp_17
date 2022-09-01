@@ -5,7 +5,6 @@
 #include <bitset>
 #include <chrono>
 #include <climits>
-#include <filesystem>
 #include <forward_list>
 #include <iomanip>
 #include <iostream>
@@ -28,11 +27,18 @@
 #include <ext/pb_ds/assoc_container.hpp>
 #endif
 
+#ifdef LOGGING
+#include <filesystem>
+#endif
+
 namespace impl {
 
 using namespace std;
 using namespace chrono;
+
+#ifdef LOGGING
 using namespace filesystem;
+#endif
 
 #ifdef __SIZEOF_INT128__
 
