@@ -694,5 +694,5 @@ constexpr long double sq(long double x) {
     return x * x;
 }
 
-constexpr int INF = 1e9;
-constexpr long long LLINF = 1e18;
+constexpr int INF = 1'000'000'000;
+constexpr long long LLINF = 1'000'000'000'000'000'000;
