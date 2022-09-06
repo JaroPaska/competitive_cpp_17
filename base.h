@@ -178,13 +178,23 @@ struct CustomHash {
 
     template<class T>
     inline void hash_combine(size_t& seed, const T& v) const {
-        seed ^= operator()(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        seed ^= operator()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
 
     template<class T1, class T2>
     size_t operator()(const pair<T1, T2>& p) const {
-        size_t seed = operator()(p.first);
+        size_t seed = 0;
+        hash_combine(seed, p.first);
         hash_combine(seed, p.second);
+        return seed;
+    }
+
+    template<class... Types>
+    size_t operator()(const tuple<Types...>& t) const {
+        size_t seed = 0;
+        apply([&](const Types&... args) {
+            (hash_combine(seed, args), ...);
+        }, t);
         return seed;
     }
 };
@@ -355,16 +365,12 @@ istream& operator>>(istream& is, pair<T1, T2>& p) {
     return is >> p.first >> p.second;
 }
 
-template<class... Types, size_t... Is>
-istream& scan_tuple(istream& is, tuple<Types...>& t, index_sequence<Is...>) {
-    auto scan_elem = [&](auto& x) { is >> x; };
-    (scan_elem(get<Is>(t)), ...);
-    return is;
-}
-
 template<class... Types>
 istream& operator>>(istream& is, tuple<Types...>& t) {
-    return scan_tuple(is, t, make_index_sequence<sizeof...(Types)>{});
+    apply([&](Types&... args) {
+        (is >> ... >> args);
+    }, t);
+    return is;
 }
 
 template<class T>
@@ -408,23 +414,20 @@ struct Printer {
         return os << tuple_fmt.close;
     }
 
-    template<class... Types, size_t... Is>
-    ostream& print(ostream& os, const tuple<Types...>& t, index_sequence<Is...>) {
+    template<class... Types>
+    ostream& print(ostream& os, const tuple<Types...>& t, rank<1>) {
+        os << tuple_fmt.open;
         bool print_sep = false;
-        auto print_elem = [&](const auto& x) {
+        auto print_impl = [&](const auto& x) {
             if (print_sep)
                 os << tuple_fmt.sep;
             print(os, x);
             print_sep = true;
         };
-        os << tuple_fmt.open;
-        (print_elem(get<Is>(t)), ...);
+        apply([&](const Types&... args) {
+            (print_impl(args), ...);
+        }, t);
         return os << tuple_fmt.close;
-    }
-
-    template<class... Types>
-    ostream& print(ostream& os, const tuple<Types...>& t, rank<1>) {
-        return print(os, t, make_index_sequence<sizeof...(Types)>{});
     }
 
     template<class T>

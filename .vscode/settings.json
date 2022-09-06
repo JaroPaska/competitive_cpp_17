@@ -79,6 +79,15 @@
         "mutex": "cpp",
         "shared_mutex": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "cwctype": "cpp",
+        "functional": "cpp",
+        "numbers": "cpp",
+        "numeric": "cpp",
+        "string_view": "cpp",
+        "variant": "cpp"
     }
 }
