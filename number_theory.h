@@ -18,13 +18,6 @@ T extended_euclid(T a, T b, T& x, T& y) {
     return r.first;
 }
 
-constexpr long long MOD = 1'000'000'007;
-
-long long mod(long long x, long long m = MOD) {
-    long long tmp = x % m;
-    return tmp >= 0 ? tmp : tmp + m;
-}
-
 long long mod_mul(long long a, long long b, long long m = MOD) {
 #ifdef _MSC_VER
     unsigned long long h, l, r;

@@ -699,3 +699,9 @@ constexpr long double sq(long double x) {
 
 constexpr int INF = 1'000'000'000;
 constexpr long long LLINF = 1'000'000'000'000'000'000;
+constexpr long long MOD = 1'000'000'007;
+
+long long mod(long long x, long long m = MOD) {
+    long long tmp = x % m;
+    return tmp >= 0 ? tmp : tmp + m;
+}
