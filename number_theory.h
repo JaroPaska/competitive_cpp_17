@@ -4,9 +4,9 @@
 
 template<class T>
 T extended_euclid(T a, T b, T& x, T& y) {
+    std::pair<T, T> r{a, b};
     std::pair<T, T> s{1, 0};
     std::pair<T, T> t{0, 1};
-    std::pair<T, T> r{a, b};
     while (r.second) {
         T q = r.first / r.second;
         r = { r.second, r.first - q * r.second };
@@ -18,7 +18,26 @@ T extended_euclid(T a, T b, T& x, T& y) {
     return r.first;
 }
 
-long long mod_mul(long long a, long long b, long long m = MOD) {
+inline int trailing_zeros(long long n) {
+    if (!n)
+        return 0;
+#ifdef _MSC_VER
+    unsigned long z = 0;
+    _BitScanForward64(&z, n);
+    return z;
+#else
+    return __builtin_ctzll(n);
+#endif
+}
+
+constexpr long long MOD = 1'000'000'007;
+
+constexpr long long mod(long long x, long long m = MOD) {
+    long long tmp = x % m;
+    return tmp >= 0 ? tmp : tmp + m;
+}
+
+inline long long mod_mul(long long a, long long b, long long m = MOD) {
 #ifdef _MSC_VER
     unsigned long long h, l, r;
     l = _umul128(llabs(a), llabs(b), &h);
@@ -122,7 +141,7 @@ bool is_prime(long long n) {
         return false;
     if (n < 4)
         return true;
-    long long r = __builtin_ctzll(n - 1);
+    long long r = trailing_zeros(n - 1);
     long long d = (n - 1) >> r;
     static std::vector<long long> BASES{ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37 }; 
     for (int i = 0; i < BASES.size() && BASES[i] <= n - 2; i++)
@@ -157,7 +176,8 @@ hash_map<long long, long long> factorize(long long n) {
         }
         return m;
     }
-    int twos = __builtin_ctzll(n);
+
+    int twos = trailing_zeros(n);
     std::vector<long long> factors(twos, 2), st{n >> twos};
     while (!st.empty() && st.back() > 1) {
         long long x = st.back();

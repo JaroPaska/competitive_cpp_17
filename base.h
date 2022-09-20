@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
+#include <cassert>
 #include <chrono>
 #include <climits>
 #include <forward_list>
@@ -18,8 +19,10 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <unordered_set>
+#include <type_traits>
 #include <variant>
 #include <vector>
 
