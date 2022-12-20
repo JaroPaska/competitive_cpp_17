@@ -6,7 +6,6 @@
 #include <cassert>
 #include <chrono>
 #include <climits>
-#include <concepts>
 #include <forward_list>
 #include <iomanip>
 #include <iostream>
