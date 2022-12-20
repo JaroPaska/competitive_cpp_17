@@ -6,6 +6,7 @@
 #include <cassert>
 #include <chrono>
 #include <climits>
+#include <concepts>
 #include <forward_list>
 #include <iomanip>
 #include <iostream>
@@ -626,6 +627,16 @@ ostream& log(ostream& os, const char* file, int line, const array<string_view, N
 #define LOG(...)
 #endif
 
+template<int D, class T>
+struct vec {
+    using type = std::vector<typename vec<D - 1, T>::type>;
+};
+
+template<class T>
+struct vec<0, T> {
+    using type = T;
+};
+
 } // namespace impl
 
 using impl::timer;
@@ -658,6 +669,19 @@ using min_heap = std::priority_queue<T, std::vector<T>, std::greater<T>>;
 
 template<class T>
 using max_heap = std::priority_queue<T>;
+
+template<int D, class T>
+using Vec = typename ::impl::vec<D, T>::type;
+
+template<class D, class T>
+constexpr auto make_vec(D&& dim, T&& init) {
+    return std::vector(dim, init);
+}
+
+template<class D, class... Args>
+constexpr auto make_vec(D&& dim, Args&&... args) {
+    return std::vector(dim, make_vec(std::forward<Args>(args)...));
+}
 
 template<class T>
 constexpr T& min_assign(T& lhs, const T& rhs) {

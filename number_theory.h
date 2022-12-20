@@ -30,13 +30,6 @@ inline int trailing_zeros(long long n) {
 #endif
 }
 
-constexpr long long MOD = 1'000'000'007;
-
-constexpr long long mod(long long x, long long m = MOD) {
-    long long tmp = x % m;
-    return tmp >= 0 ? tmp : tmp + m;
-}
-
 inline long long mod_mul(long long a, long long b, long long m = MOD) {
 #ifdef _MSC_VER
     unsigned long long h, l, r;
