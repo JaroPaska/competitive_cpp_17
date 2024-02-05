@@ -7,6 +7,7 @@
 #include <chrono>
 #include <climits>
 #include <forward_list>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <list>
@@ -725,7 +726,7 @@ constexpr long double sq(long double x) {
 
 constexpr int INF = 1'000'000'000;
 constexpr long long LLINF = 1'000'000'000'000'000'000;
-constexpr long long MOD = 1'000'000'007;
+constexpr long long MOD = 998244353;
 
 long long mod(long long x, long long m = MOD) {
     long long tmp = x % m;
